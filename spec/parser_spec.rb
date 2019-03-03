@@ -10,8 +10,17 @@ describe Parser do
 
   describe '#call' do
     context 'with correct data' do
-      it 'returns a string of results' do
-        expect(subject.call).to eq("{\"/help_page/1\"=>1, \"/contact\"=>1, \"/home\"=>1, \"/about/2\"=>1} {\"/help_page/1\"=>1, \"/contact\"=>1, \"/home\"=>1, \"/about/2\"=>1}")
+      it 'outputs the correct results' do
+        expect { subject.call }.to output(<<~HEREDOC).to_stdout
+        /about/2 1 visits
+        /home 1 visits
+        /contact 1 visits
+        /help_page/1 1 visits
+        /about/2 1 unique views
+        /home 1 unique views
+        /contact 1 unique views
+        /help_page/1 1 unique views
+        HEREDOC
       end
     end
 
