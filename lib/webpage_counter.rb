@@ -1,19 +1,42 @@
 class WebpageCounter
-  attr_reader :page_views
+  attr_reader :sum_ip_addresses_by_webpage, :views_per_page, :unique_views_per_page
   def initialize
-    @page_views = {}
+    @sum_ip_addresses_by_webpage = {}
+    @views_per_page = {}
+    @unique_views_per_page = {}
   end
 
-  def webpage_counts_by_ip_address(log_lines)
+  def call
+    count_ip_addresses_by_webpage
+    total_views_per_webpage
+    total_unique_views_per_webpage
+  end
+
+  def count_ip_addresses_by_webpage(log_lines)
     log_lines.each do |line|
       webpage = line[0]
       ip_address = line[1]
-      if @page_views[webpage]
-        @page_views[webpage][ip_address] += 1
+      if @sum_ip_addresses_by_webpage[webpage]
+        @sum_ip_addresses_by_webpage[webpage][ip_address] += 1
       else
-        @page_views[webpage] = Hash.new(0)
-        @page_views[webpage][ip_address] = 1
+        @sum_ip_addresses_by_webpage[webpage] = Hash.new(0)
+        @sum_ip_addresses_by_webpage[webpage][ip_address] = 1
       end
     end
+    @sum_ip_addresses_by_webpage
+  end
+
+  def total_views_per_webpage(sum_ip_addresses_by_webpage)
+    sum_ip_addresses_by_webpage.each do |key, value|
+      @views_per_page[key] = value.values.sum
+    end
+    @views_per_page
+  end
+
+  def total_unique_views_per_webpage(sum_ip_addresses_by_webpage)
+    sum_ip_addresses_by_webpage.each do |key, value|
+      @unique_views_per_page[key] = value.length
+    end
+    @unique_views_per_page
   end
 end
