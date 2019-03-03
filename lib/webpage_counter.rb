@@ -1,15 +1,8 @@
 class WebpageCounter
-  attr_reader :sum_ip_addresses_by_webpage, :views_per_page, :unique_views_per_page
   def initialize
     @sum_ip_addresses_by_webpage = {}
     @views_per_page = {}
     @unique_views_per_page = {}
-  end
-
-  def call
-    count_ip_addresses_by_webpage
-    total_views_per_webpage
-    total_unique_views_per_webpage
   end
 
   def count_ip_addresses_by_webpage(log_lines)

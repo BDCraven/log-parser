@@ -12,6 +12,6 @@ class ParserFormatter
   end
 
   def sort_by_views_descending(counted_webpage_views)
-      counted_webpage_views.sort_by {|_key, value| value}.reverse
+    counted_webpage_views.sort_by { |_key, value| value }.reverse
   end
 end

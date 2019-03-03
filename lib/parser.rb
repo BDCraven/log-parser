@@ -16,6 +16,8 @@ class Parser
     print_results
   end
 
+  private
+
   def count_webpages(log_lines)
     @counted_webpage_views ||= webpage_counter.count_ip_addresses_by_webpage(log_lines)
   end
