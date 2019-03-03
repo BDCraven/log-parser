@@ -11,13 +11,42 @@ class Parser
   end
 
   def call
-    log_lines = LogDataValidator.new.validate(log_data)
-    counter = WebpageCounter.new
-    page_views_by_ip_address = counter.count_ip_addresses_by_webpage(log_lines)
-    formatter = ParserFormatter.new
-    sorted_views_per_webpage = formatter.sort_by_views_descending(counter.total_views_per_webpage(page_views_by_ip_address))
-    sorted_unique_views_per_webpage = formatter.sort_by_views_descending(counter.total_unique_views_per_webpage(page_views_by_ip_address))
-    formatter.printwebpages(sorted_views_per_webpage)
-    formatter.printuniquewebpages(sorted_unique_views_per_webpage)
+    count_webpages(validated_log_data)
+    sort_data
+    print_results
+  end
+
+  def count_webpages(log_lines)
+    @counted_webpage_views ||= webpage_counter.count_ip_addresses_by_webpage(log_lines)
+  end
+
+  def validated_log_data
+    @validated_log_data = LogDataValidator.new.validate(log_data)
+  end
+
+  def webpage_counter
+    @webpage_counter ||= WebpageCounter.new
+  end
+
+  def sort_data
+    @sorted_views_per_webpage = parser_formatter.sort_by_views_descending(page_views_by_ip_address)
+    @sorted_unique_views_per_webpage = parser_formatter.sort_by_views_descending(total_unique_views_per_webpage)
+  end
+
+  def parser_formatter
+    @parser_formatter ||= ParserFormatter.new
+  end
+
+  def page_views_by_ip_address
+    webpage_counter.total_views_per_webpage(@counted_webpage_views)
+  end
+
+  def total_unique_views_per_webpage
+    webpage_counter.total_unique_views_per_webpage(@counted_webpage_views)
+  end
+
+  def print_results
+    parser_formatter.printwebpages(@sorted_views_per_webpage)
+    parser_formatter.printuniquewebpages(@sorted_unique_views_per_webpage)
   end
 end
